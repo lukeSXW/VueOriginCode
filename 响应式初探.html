@@ -1,0 +1,55 @@
+<div id="app">
+
+</div>
+
+<script>
+    const data = {
+        name: 'wxs',
+        age: '123',
+        otherInfo: {
+            friends: '111',
+            apt: '222'
+        }
+    }
+
+    function defineReactive(targetObject, targetKey, originValue) {
+        // 原始的值也有可能是一个对象，所以需要进行响应式处理
+        if (typeof originValue === 'object' && originValue) {
+            activeObject(originValue)
+        }
+        Object.defineProperty(targetObject, targetKey, {
+            get() {
+                return targetObject[`_${targetKey}`] || originValue;
+            },
+            set(newValue) {
+                // 如果新值不等于旧值，且不等于null，则需要更新视图
+                if (newValue !== originValue && newValue) {
+                    // 如果新值也是对象，则需要响应化处理
+                    if (typeof newValue === 'object' || newValue) {
+                        activeObject(newValue);
+                    }
+                    targetObject[`_${targetKey}`] = newValue;
+                    UpdateView(newValue);
+                }
+            }
+        })
+    }
+
+    // 更新视图函数
+    function UpdateView(newValue) {
+        document.getElementById('app').innerHTML = JSON.stringify(newValue);
+    }
+
+    // 使obj变成响应式变量
+    function activeObject(targetObj) {
+        // 如果响应式变量是个对象才执行操作
+        if (typeof targetObj === 'object' && targetObj) {
+            Object.keys(targetObj).forEach(item => {
+                defineReactive(targetObj, item, targetObj[item]);
+            })
+        }
+    }
+
+    activeObject(data);
+
+</script>
