@@ -14,9 +14,7 @@
 
     function defineReactive(targetObject, targetKey, originValue) {
         // 原始的值也有可能是一个对象，所以需要进行响应式处理
-        if (typeof originValue === 'object' && originValue) {
-            activeObject(originValue)
-        }
+        activeObject(originValue)
         Object.defineProperty(targetObject, targetKey, {
             get() {
                 return targetObject[`_${targetKey}`] || originValue;
